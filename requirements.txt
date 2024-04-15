@@ -1,0 +1,8 @@
+plotly 
+pandas
+shiny
+shinywidgets
+faicons
+plotly.express
+shiny.express
+requests
