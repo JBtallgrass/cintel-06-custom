@@ -10,6 +10,7 @@ import pandas as pd
 import plotly.express as px
 from shinywidgets import render_plotly, render_widget
 from scipy import stats
+import requests # read the API from WX source
 
 #---------------------------------------------
 # PROJECT ENHANCEMENTS- Using AI Asst to explore and discover
@@ -23,6 +24,19 @@ from faicons import icon_svg
 # --------------------------------------------
 from ipyleaflet import Map  
 # ---------------------------------------------
+# Constants for OpenWeather API
+API_KEY = 'your_api_key_here'
+BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
+CITY_ID = 4393217  # Kansas City ID
+
+def fetch_temperature():
+    """Fetches the current temperature from OpenWeather API for Kansas City."""
+    url = f"{BASE_URL}?id={CITY_ID}&appid={API_KEY}&units=metric"
+    response = requests.get(url)
+    response.raise_for_status()  # Raises an HTTPError for bad responses
+    data = response.json()
+    return round(data['main']['temp'], 1)
+
 # First, set a constant UPDATE INTERVAL for all live data
 # Constants are usually defined in uppercase letters
 # Use a type hint to make it clear that it's an integer (: int)
@@ -55,10 +69,10 @@ def reactive_calc_combined():
     # Invalidate this calculation every UPDATE_INTERVAL_SECS to trigger updates
     reactive.invalidate_later(UPDATE_INTERVAL_SECS)
 
-    # Data generation logic
-    temp = round(random.uniform(7, 19), 1)
+    # Fetch current temperature from OpenWeather API
+    temp = fetch_temperature()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    new_dictionary_entry = {"temp":temp, "timestamp":timestamp}
+    new_dictionary_entry = {"temp": temp, "timestamp": timestamp}
 
     # get the deque and append the new entry
     reactive_value_wrapper.get().append(new_dictionary_entry)
@@ -73,7 +87,6 @@ def reactive_calc_combined():
     latest_dictionary_entry = new_dictionary_entry
 
     # Return a tuple with everything we need
-    # Every time we call this function, we'll get all these values
     return deque_snapshot, df, latest_dictionary_entry
 
 
