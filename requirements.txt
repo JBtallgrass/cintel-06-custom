@@ -1,8 +1,6 @@
-plotly 
-pandas
-shiny
-shinywidgets
 faicons
-plotly.express
-shiny.express
-requests
+shiny
+shinylive
+seaborn
+pandas
+palmerpenguins
