@@ -1,6 +1,6 @@
 # Imports
 import requests
-from shiny import reactive, render
+from shiny import reactive
 from shiny.express import ui
 from datetime import datetime
 from collections import deque
